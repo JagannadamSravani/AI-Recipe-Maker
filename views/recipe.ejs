@@ -1,0 +1,41 @@
+const express = require('express');
+const axios = require('axios');
+const router = express.Router();
+
+// Home page
+router.get('/', (req, res) => {
+  res.render('index', { recipes: ["Pasta", "Paneer Butter Masala", "Chocolate Cake"] });
+});
+
+// Recipe details (ChefGPT API)
+router.get('/recipe/:name', async (req, res) => {
+  const recipeName = req.params.name;
+
+  try {
+    const response = await axios.post(
+      "https://api.chefgpt.xyz/api/generate/recipe",   // ✅ Update endpoint
+      {
+        recipe: recipeName,
+        measurement: "metric",
+        servings: 2,
+        difficulty: "intermediate"
+      },
+      {
+        headers: {
+          "Authorization": "YOUR_API_KEY",  // 🔑 Replace with your real API key
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const recipe = response.data;
+
+    res.render('recipe', { recipe });
+
+  } catch (error) {
+    console.error(error.response ? error.response.data : error.message);
+    res.send("⚠️ Error fetching recipe from ChefGPT API");
+  }
+});
+
+module.exports = router;

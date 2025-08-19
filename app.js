@@ -1,0 +1,21 @@
+const express = require("express");
+const path = require("path");
+
+const app = express();
+const PORT = 3005;
+
+// Serve static files (JS, CSS, images)
+app.use(express.static(path.join(__dirname, "public")));
+
+// Set view engine as EJS
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// Routes
+app.get("/", (req, res) => {
+  res.render("index"); // renders views/index.ejs
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
+});
